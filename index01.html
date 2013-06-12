@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+  	<head>
+    <title> After hack session with Ian </title>
+	    
+	    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
+	    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.geom.js"></script>
+	    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.layout.js"></script>
+		<!--
+		<script type="text/javascript" src="../roark/d3/d3.v2.js"></script>
+	    <script type="text/javascript" src="../roark/d3/d3.geom.js"></script>
+	    <script type="text/javascript" src="../roark/d3/d3.layout.js"></script>
+	    <script type="text/javascript" src="../roark/d3/underscore.js"></script>
+	-->
+  	</head>
+  <body>
+  	<div id="display">
+    <script type="text/javascript">
+
+var width = 1140,
+	height = 600,
+	layout_gravity = -0.1,
+	damper = 0.1,
+	nodes = [],
+	vis, force, circles, radius_scale;
+
+var center = {x: width / 2, y: height / 2};
+
+var meetup_centers = {
+    "84485982_true": {x: 300, y: 250},
+    "84485982_false": {x: 300, y: 400},
+    "102356032_true": {x: width / 2, y: 250},
+    "102356032_false": {x: width / 2, y: 400},
+    "103428452_true": {x: width - 300, y: 250},
+    "103428452_false": {x: width - 300, y: 400}
+};
+
+/*
+var fill_color = d3.scale.ordinal()
+	.domain(["low", "medium", "high"])
+	.range(["#d84b2a", "#beccae", "#7aa25c"]);
+*/
+
+/*
+var max_amount = d3.max(data, function(d) {return parseInt(d.total_amount, 10); });
+
+var radius_scale = d3.scale.pow().exponent(0.5)
+	.domain([0, max_amount])
+	.range([2, 85]);
+*/
+
+/*
+var typeMouseOver = function() {
+    var thisObject = d3.select(this);
+    var idValue = thisObject.attr("id_value");
+    var nodeSelector = "." + +"id1" + idValue;
+    var pone = d3.selectAll(nodeSelector);
+    pone.style("fill", "red");
+}
+
+var myMouseOverFunction = function() {
+    var circle = d3.select(this);
+        //circle.attr("stroke", "red");
+        circle.attr("id", function(d) { return d.id; });
+
+        d3.select("." + d.id).style("fill", "red");
+
+            // show infobox div on mouseover.
+            // block means sorta "render on the page" whereas none would mean "don't render at all"
+        //d3.select(".infobox").style("display", "block");    
+            // add test to p tag in infobox
+       //d3.select("p").text("This circle has a radius of " + circle.attr("r") + " pixels.");
+       
+       //circles.filter(function(d,i) {
+       // if (d.id === 1) { return circle.attr("stroke", "red")}
+      // })
+    }
+ 
+var myMouseOutFunction = function() {
+    var circle = d3.select(this);
+        circle.attr('stroke', function(d) {return d3.rgb(fill_color(d.group)).darker(); });
+                
+            // display none removes element totally, whereas visibilty in last example just hid it
+        //d3.select(".infobox").style("display", "none"); 
+    }
+*/
+d3.json("data_meetup_initial.json", function(data) { 
+
+data.forEach(function(d) {
+    var nameId;
+
+    if (d.member)
+    {
+        nameId = "id_" + d.member.member_id;
+    } else {
+        nameId = null;
+    }
+
+	node = {
+        /*           
+        id: function(d) {
+            if (d.member.name) != null {
+                return (d.member.name)
+            } else {
+                return "na"
+            }
+        }, */
+		id: nameId,
+		//radius: radius_scale(parseInt(d.total_amount, 10)),
+		//value: d.total_amount,
+		//name: d.name,
+		//group: d.group,
+		//year: d.start_year,
+		x: Math.random() * 900,
+		y: Math.random() * 800,
+        //meetup: d.event_id,
+        node_centers: d.event.id + "_" + d.attended
+	};
+	nodes.push(node);
+});
+
+nodes.sort(function(a,b) {return b.value - a.value; });
+
+vis = d3.select("#display").append("svg")
+    .attr('width', width)
+    .attr('height', height)
+    .attr('id', 'svg_vis');
+
+circles = vis.selectAll('circle')
+	.data(nodes, function(d) {return d.id; });
+
+circles.enter()
+	.append('circle')
+	.attr('r', 10)
+    //.attr('id_value', function(d) {return d.id; })
+	//.attr('fill', function(d) {return fill_color(d.group); })
+	.attr('stroke-width', 2)
+    .attr("class", function(d) {return d.id; })
+    .style("opacity", 0.8);
+	//.attr('stroke', function(d) {return d3.rgb(fill_color(d.group)).darker(); });
+
+circles.on("mouseover", function(d) {
+    circles.transition().duration(500).style("opacity", 0.5)
+    var circle = d3.select(this);
+
+    d3.selectAll("." + d.id).transition().duration(500).attr('r', 13).attr("stroke-width", 4).attr("stroke", "red").style("opacity", 1);
+
+    //circles.style("opacity", 0.5);
+})
+/*
+circles.on("mouseover", function(d) {
+    //d3.selectAll("." + d.id).style("fill", "red");
+    //var circle = d3.select(this);
+        //circle.attr("stroke", "red");
+        //if (d.id == 1) {
+        //    return circles.attr("stroke", "red")}
+    var circle = d3.select(this);
+        //circle.attr("stroke", "red");
+        circle.attr("id", function(d) {return d.id; });
+
+        d3.select("#" + d.id).style("fill", "red");
+        
+}) */
+    .on("mouseout", function(d) {
+        circles.transition().duration(500).attr("stroke-width", 2).attr('r', 10).attr("stroke", "black").style("opacity", 0.8);
+    });
+
+function charge(d) {
+	return -Math.pow(10, 2.0) / 8;
+}
+
+force = d3.layout.force()
+	.nodes(nodes)
+	.size([width, height]);
+
+circles.call(force.drag);
+
+force.gravity(-0.01)
+	.charge(charge)
+	.friction(0.9)
+	.on('tick', function(e) {
+			force.nodes().forEach(function(d) {
+				//var target = year_centers[d.year]
+                var target = meetup_centers[d.node_centers]
+				d.x = d.x + (target.x - d.x) * (damper + 0.02) * e.alpha;
+				d.y = d.y + (target.y - d.y) * (damper + 0.02) * e.alpha;
+			})
+			vis.selectAll('circle')
+				.attr('cx', function(d) {return d.x;})
+				.attr('cy', function(d) {return d.y;});
+	});
+
+//column labeling
+var meetups_x = {"x": 200, "y": width / 2, "z": width - 200};
+var meetups_x_data = d3.keys(meetups_x)
+var columnlabels = vis.selectAll("body")
+    .data(meetups_x_data);
+
+columnlabels.enter().append("text")
+    .attr("class", "years")
+    .attr("x", function(d) { return meetups_x[d]; })
+    .attr("y", 40)
+    .attr("text-anchor", "middle")
+    .text(function(d) { return d; });
+
+//row labeling
+var meetups_y = {"attended": 150, "flaked": 400};
+var meetups_y_data = d3.keys(meetups_y)
+var rowlabels = vis.selectAll("body")
+    .data(meetups_y_data);
+
+rowlabels.enter().append("text")
+    .attr("class", "rows")
+    .attr("x", 30)
+    .attr("y", function(d) { return meetups_y[d]; })
+    .attr("text-anchor", "middle")
+    .text(function(d) { return d; });
+
+//start
+force.start();
+
+//end of function
+});
+
+    </script>
+  </body>
+</html>
