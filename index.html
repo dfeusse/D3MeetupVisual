@@ -3,9 +3,7 @@
   	<head>
     <title> After hack session with Ian </title>
 	    
-	    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.js"></script>
-	    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.geom.js"></script>
-	    <script type="text/javascript" src="http://mbostock.github.com/d3/d3.layout.js"></script>
+	    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 		<!--
 		<script type="text/javascript" src="../roark/d3/d3.v2.js"></script>
 	    <script type="text/javascript" src="../roark/d3/d3.geom.js"></script>
@@ -86,25 +84,18 @@ var myMouseOutFunction = function() {
 */
 d3.json("data_meetup_initial.json", function(data) { 
 
+
 data.forEach(function(d) {
     var nameId;
-
     if (d.member)
     {
-        nameId = "id_" + d.member.member_id;
+      nameId = "id_" + d.member.member_id;
     } else {
-        nameId = null;
+      //we still want to have a unique id for these nodes. luckily the database assigned one already!
+      nameId = "id_" + d._id;
     }
 
 	node = {
-        /*           
-        id: function(d) {
-            if (d.member.name) != null {
-                return (d.member.name)
-            } else {
-                return "na"
-            }
-        }, */
 		id: nameId,
 		//radius: radius_scale(parseInt(d.total_amount, 10)),
 		//value: d.total_amount,
@@ -113,8 +104,8 @@ data.forEach(function(d) {
 		//year: d.start_year,
 		x: Math.random() * 900,
 		y: Math.random() * 800,
-        //meetup: d.event_id,
-        node_centers: d.event.id + "_" + d.attended
+    //meetup: d.event_id,
+    node_centers: d.event.id + "_" + d.attended
 	};
 	nodes.push(node);
 });
@@ -140,10 +131,21 @@ circles.enter()
 	//.attr('stroke', function(d) {return d3.rgb(fill_color(d.group)).darker(); });
 
 circles.on("mouseover", function(d) {
-    circles.transition().duration(500).style("opacity", 0.5)
+    circles.transition().duration(500)
+    .style("opacity", 0.5)
+    .attr("stroke-width", 2)
+    .attr('r', 10)
+    .attr("stroke", "black")
+
+    
     var circle = d3.select(this);
 
-    d3.selectAll("." + d.id).transition().duration(500).attr('r', 13).attr("stroke-width", 4).attr("stroke", "red").style("opacity", 1);
+    vis.selectAll("." + d.id)
+      .transition().duration(500)
+      .attr('r', 13)
+      .attr("stroke-width", 4)
+      .attr("stroke", "red")
+      .style("opacity", 1);
 
     //circles.style("opacity", 0.5);
 })
@@ -162,7 +164,11 @@ circles.on("mouseover", function(d) {
         
 }) */
     .on("mouseout", function(d) {
-        circles.transition().duration(500).attr("stroke-width", 2).attr('r', 10).attr("stroke", "black").style("opacity", 0.8);
+        circles.transition().duration(500)
+        .attr("stroke-width", 2)
+        .attr('r', 10)
+        .attr("stroke", "black")
+        .style("opacity", 0.8);
     });
 
 function charge(d) {
@@ -181,7 +187,7 @@ force.gravity(-0.01)
 	.on('tick', function(e) {
 			force.nodes().forEach(function(d) {
 				//var target = year_centers[d.year]
-                var target = meetup_centers[d.node_centers]
+        var target = meetup_centers[d.node_centers]
 				d.x = d.x + (target.x - d.x) * (damper + 0.02) * e.alpha;
 				d.y = d.y + (target.y - d.y) * (damper + 0.02) * e.alpha;
 			})
