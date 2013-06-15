@@ -3,8 +3,9 @@
   	<head>
     <title> After hack session with Ian </title>
 	    
-	    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+	    <script type="text/javascript" src="d3.min.js"></script>
 		<!--
+	    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
 		<script type="text/javascript" src="../roark/d3/d3.v2.js"></script>
 	    <script type="text/javascript" src="../roark/d3/d3.geom.js"></script>
 	    <script type="text/javascript" src="../roark/d3/d3.layout.js"></script>
@@ -112,64 +113,54 @@ data.forEach(function(d) {
 
 nodes.sort(function(a,b) {return b.value - a.value; });
 
-vis = d3.select("#display").append("svg")
-    .attr('width', width)
-    .attr('height', height)
-    .attr('id', 'svg_vis');
-
-circles = vis.selectAll('circle')
-	.data(nodes, function(d) {return d.id; });
-
-circles.enter()
-	.append('circle')
-	.attr('r', 10)
-    //.attr('id_value', function(d) {return d.id; })
-	//.attr('fill', function(d) {return fill_color(d.group); })
-	.attr('stroke-width', 2)
-    .attr("class", function(d) {return d.id; })
-    .style("opacity", 0.8);
-	//.attr('stroke', function(d) {return d3.rgb(fill_color(d.group)).darker(); });
-
-circles.on("mouseover", function(d) {
-    circles.transition().duration(500)
+function turnOn(selection) {
+  selection
+    .attr('r', 13)
+    .attr("stroke-width", 4)
+    .attr("stroke", "red")
+    .style("opacity", 1);
+}
+function turnOff(selection) {
+  selection
     .style("opacity", 0.5)
     .attr("stroke-width", 2)
     .attr('r', 10)
     .attr("stroke", "black")
+}
 
-    
-    var circle = d3.select(this);
+var vis = d3.select("#display").append("svg")
+    .attr('width', width)
+    .attr('height', height)
+    .attr('id', 'svg_vis');
 
-    vis.selectAll("." + d.id)
-      .transition().duration(500)
-      .attr('r', 13)
-      .attr("stroke-width", 4)
-      .attr("stroke", "red")
-      .style("opacity", 1);
+var circles = vis.selectAll('circle')
+	.data(nodes, function(d) {return d.id; });
+var inACircle = false;
+circles.enter()
+	.append('circle')
+    //.attr('id_value', function(d) {return d.id; })
+	//.attr('fill', function(d) {return fill_color(d.group); })
+  .attr("class", function(d) {return d.id; })
+	.attr('stroke-width', 2)
+	.attr('r', 10)
+  .style("opacity", 0.8);
+	//.attr('stroke', function(d) {return d3.rgb(fill_color(d.group)).darker(); });
 
-    //circles.style("opacity", 0.5);
-})
-/*
 circles.on("mouseover", function(d) {
-    //d3.selectAll("." + d.id).style("fill", "red");
-    //var circle = d3.select(this);
-        //circle.attr("stroke", "red");
-        //if (d.id == 1) {
-        //    return circles.attr("stroke", "red")}
-    var circle = d3.select(this);
-        //circle.attr("stroke", "red");
-        circle.attr("id", function(d) {return d.id; });
+  inACircle = true;
+  circles.filter(function(f) { return f.id !== d.id })
+    .transition().duration(300)
+    .call(turnOff)
 
-        d3.select("#" + d.id).style("fill", "red");
-        
-}) */
-    .on("mouseout", function(d) {
-        circles.transition().duration(500)
-        .attr("stroke-width", 2)
-        .attr('r', 10)
-        .attr("stroke", "black")
-        .style("opacity", 0.8);
-    });
+  circles.filter(function(f) { return f.id === d.id })
+    .transition().duration(100)
+    .call(turnOn);
+  //circles.style("opacity", 0.5);
+})
+.on("mouseout", function(d) {
+  circles.transition().duration(500)
+  .call(turnOff)
+});
 
 function charge(d) {
 	return -Math.pow(10, 2.0) / 8;
