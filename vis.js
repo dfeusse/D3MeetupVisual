@@ -1,6 +1,6 @@
 function turnOn(selection) {
   selection
-    .attr('r', 13)
+    //.attr('r', 13)
     .attr("stroke-width", 4)
     .attr("stroke", "red")
     .style("opacity", 1);
@@ -9,15 +9,26 @@ function turnOff(selection) {
   selection
     .style("opacity", 0.5)
     .attr("stroke-width", 2)
-    .attr('r', 10)
+    //.attr('r', 10)
     .attr("stroke", "black")
 }
 
 
 function visualize() {
+  
+  var scoreSizeScale = d3.scale.sqrt()
+    //.domain(d3.extent(nodes, function(d) { return d.score }))
+    .domain([-3, 3])
+    .range([5, 10]);
+  
+  var scoreColorScale = d3.scale.linear()
+    //.domain([-3, -2, -1, 0, 1, 2, 3])
+    .domain([-3, 3])
+    .range(["#ff0000", "#00ff00"])
+
   var tip = d3.tip()
     .attr('class', 'd3-tip')
-    .html(function(d) { return 'pone' + d.id })
+    .html(function(d) { return 'Member: ' + d.name })
     //.html(function(d) { return d.name; })
     .offset([-12, 0]);
 
@@ -37,8 +48,11 @@ function visualize() {
     //.attr('fill', function(d) {return fill_color(d.group); })
     .attr("class", function(d) {return d.id; })
     .attr('stroke-width', 2)
-    .attr('r', 10)
-    .style("opacity", 0.8);
+    //.attr('r', 10)
+    .attr('r', function(d) { return scoreSizeScale(d.score); })
+    .style('fill', function(d) { return scoreColorScale(d.score); })
+    .style("opacity", 0.8)
+  
 
   
     //.attr('stroke', function(d) {return d3.rgb(fill_color(d.group)).darker(); });

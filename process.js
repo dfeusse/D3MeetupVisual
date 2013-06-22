@@ -1,5 +1,7 @@
 
 function process(data) {
+  memberLookup = {};
+  
   data.forEach(function(d) {
     var nameId;
     if (d.member)
@@ -14,52 +16,39 @@ function process(data) {
     if (d.attended) 
     {
       nodeScore = 1
-        } else {
-          nodeScore = -1;
-        } 
-      
+    } else {
+      nodeScore = -1;
+    } 
 
     node = {
       id: nameId,
       //radius: radius_scale(parseInt(d.total_amount, 10)),
       //value: d.total_amount,
-      //name: d.name,
+      name: d.member? d.member.name : "",
       //group: d.group,
       //year: d.start_year,
       x: Math.random() * 900,
       y: Math.random() * 800,
       //meetup: d.event_id,
       attended: d.attended, //ADDED
-      node_score: nodeScore, //ADDED
-      //node_array: [],
       node_centers: d.event.id + "_" + d.attended
     };
-
-
+    
+    var member = memberLookup[nameId];
+    if(!member) {
+      member = memberLookup[nameId] = {};
+      member.score = d.attended ? nodeScore : nodeScore;
+      member.nodes = [node];
+    } else {
+      member.score += nodeScore;
+      member.nodes.push(node);
+      console.log("ID", nameId)
+    }
+    node.score = member.score;
+    
     nodes.push(node);
   });
   nodes.sort(function(a,b) {return b.value - a.value; });
 
-var node_object = {};
-for (var i=0; i<nodes.length; i++) {
-      var s = nodes[i];
-      s = [s.id];
-        }
-    
-
-/*
-for (var i=0; i<nodes.length; i++) {
-  var s = nodes[i];
-  console.log(s.id);
-  node_object.id = s.id
-}
-*/
-
 } // end of process function
 
-
-function nodeArrays(data) {
-    data.forEach(function(d) {
-
-    })
-}
