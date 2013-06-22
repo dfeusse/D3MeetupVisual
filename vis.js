@@ -32,7 +32,11 @@ function visualize() {
   
   var tip = d3.tip()
     .attr('class', 'd3-tip')
-    .html(function(d) { console.log("D", d); return 'Member: ' + '<span>' + d.name + '</span>' })
+    .html(function(d) { 
+      var data = memberLookup[d.id].data;
+      console.log("DATA", data)
+      
+      return 'Member: ' + '<span>' + d.name + '</span>' })
     //.html(function(d) { return d.name; })
     .offset([-12, 0]);
 
@@ -56,36 +60,52 @@ function visualize() {
   .interpolate("cardinal")
   
 
-  var circles = vis.selectAll('circle')
+  var members = vis.selectAll('g.member')
     .data(nodes)//, function(d) {return d.id; });
   var inACircle = false;
-  circles.enter()
+  membersEnter = members.enter()
+    .append("g").classed("member", true)
+  membersEnter
     .append('circle')
       //.attr('id_value', function(d) {return d.id; })
     //.attr('fill', function(d) {return fill_color(d.group); })
     .attr("class", function(d) {return d.id; })
     .attr('stroke-width', 2)
-    //.attr('r', 10)
+    //.attr('r', 20)
     .attr('r', function(d) { return scoreSizeScale(memberLookup[d.id].score); })
     .style('fill', function(d) { return scoreColorScale(memberLookup[d.id].score); })
     .style("opacity", 0.8)
-  
 
+    /*
+  membersEnter.append("image")
+  .filter(function(d) { 
+    var data = memberLookup[d.id].data;
+    return data.member_photo
+  })
+  .attr({
+    width: 22,
+    height: 22,
+    "xlink:href": function(d) {
+      var data = memberLookup[d.id].data;
+      return data.member_photo.thumb_link;
+    }
+  })
+  */
   
     //.attr('stroke', function(d) {return d3.rgb(fill_color(d.group)).darker(); });
 
-  circles.on("mouseover", mouseOver);
+  members.on("mouseover", mouseOver);
   paths.on("mouseover", mouseOver);
   
   function mouseOver(d) {
     //tip.show
     inACircle = true;
-    circles.filter(function(f) { return f.id !== d.id })
+    members.filter(function(f) { return f.id !== d.id })
     .classed("selected", false)
       //.transition().duration(300)
       //.call(turnOff)
 
-    circles.filter(function(f) { return f.id === d.id })
+    members.filter(function(f) { return f.id === d.id })
     .classed("selected", true)
       //.transition().duration(100)
       //.call(turnOn)
@@ -98,11 +118,13 @@ function visualize() {
 
   }
 
-  circles.on("mouseout", mouseOut);
+  members.on("mouseout", mouseOut);
   paths.on("mouseout", mouseOut);
   function mouseOut(d) {
-    circles.transition().duration(500)
-    .call(turnOff)
+    members.classed("selected", false)
+    paths.classed("selected", false)
+    //members.transition().duration(500)
+    //.call(turnOff)
   }
 
   function charge(d) {
@@ -113,7 +135,7 @@ function visualize() {
     .nodes(nodes)
     .size([width, height]);
 
-  circles.call(force.drag);
+  members.call(force.drag);
 
   force.gravity(-0.01)
     .charge(charge)
@@ -126,9 +148,12 @@ function visualize() {
           d.x = d.x + (target.x - d.x) * (damper + 0.02) * e.alpha;
           d.y = d.y + ((target.y - attendance_score) - d.y) * (damper + 0.02) * e.alpha;
         })
-        vis.selectAll('circle')
-          .attr('cx', function(d) {return d.x;})
-          .attr('cy', function(d) {return d.y;});
+        members
+         .attr("transform", function(d,i) {
+           return "translate(" + [d.x, d.y] + ")";
+         })
+          //.attr('cx', function(d) {return d.x;})
+          //.attr('cy', function(d) {return d.y;});
         vis.selectAll("path.connector")
       .attr("d", function(d) { return line(d.nodes) })
     });
@@ -162,11 +187,11 @@ function visualize() {
   //start
   force.start();
 
-  circles.on('mouseover.tip', tip.show);
-  circles.on('mouseout.tip', tip.hide);
+  members.on('mouseover.tip', tip.show);
+  members.on('mouseout.tip', tip.hide);
   
   paths.on('mouseover.tip1', function(d,i) {
-    var node = circles.filter(function(f) { return f.id === d.id })
+    var node = members.filter(function(f) { return f.id === d.id })
     .node()
     var evObj = document.createEvent('MouseEvents')
     evObj.initEvent('mouseover', true, false)
@@ -174,7 +199,7 @@ function visualize() {
   });
   //paths.on('mouseout.tip', tip.hide);
   paths.on('mouseout.tip1', function(d,i) {
-    var node = circles.filter(function(f) { return f.id === d.id })
+    var node = members.filter(function(f) { return f.id === d.id })
     .node()
     var evObj = document.createEvent('MouseEvents')
     evObj.initEvent('mouseout', true, false)

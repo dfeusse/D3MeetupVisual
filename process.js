@@ -41,9 +41,9 @@ function process(data) {
     if(!member) {
       member = memberLookup[nameId] = {};
       member.id = nameId;
-      //member.name = node.name;
       member.score = d.attended ? nodeScore : nodeScore;
       member.nodes = [node];
+      member.data = d;
     } else {
       member.score += nodeScore;
       member.nodes.push(node);
