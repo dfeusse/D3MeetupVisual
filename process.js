@@ -1,8 +1,11 @@
 
 function process(data) {
-  data.sort(function(a,b) {return b.attendedAt - a.attendedAt; });
-  data.forEach(function(d) {
-    var nameId;
+  data.sort(function(a,b) {return a.event.id - b.event.id; });
+  
+  var d;
+  var nameId;
+  for(var i = 0; i < data.length; i++) {
+    d = data[i];
     if (d.member && d.member.member_id)
     {
       nameId = "id_" + d.member.member_id;
@@ -30,6 +33,7 @@ function process(data) {
       y: Math.random() * 800,
       //meetup: d.event_id,
       attended: d.attended, //ADDED
+      //node_score: nodeScore,
       node_centers: d.event.id + "_" + d.attended
     };
     
@@ -37,6 +41,7 @@ function process(data) {
     if(!member) {
       member = memberLookup[nameId] = {};
       member.id = nameId;
+      //member.name = node.name;
       member.score = d.attended ? nodeScore : nodeScore;
       member.nodes = [node];
     } else {
@@ -45,7 +50,7 @@ function process(data) {
     }
     
     nodes.push(node);
-  });
+  }
   
   for(key in memberLookup) {
     var member = memberLookup[key];

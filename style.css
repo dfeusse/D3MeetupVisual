@@ -42,8 +42,8 @@ body {
 .connector {
   fill: none;
   stroke: #949494;
-  stroke-width: 1;
-  stroke-opacity: 0.5;
+  stroke-width: 5;
+  stroke-opacity: 0.05;
 }
 
 .connector.selected {
