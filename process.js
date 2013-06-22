@@ -1,8 +1,9 @@
 
 function process(data) {
+  data.sort(function(a,b) {return b.attendedAt - a.attendedAt; });
   data.forEach(function(d) {
     var nameId;
-    if (d.member)
+    if (d.member && d.member.member_id)
     {
       nameId = "id_" + d.member.member_id;
     } else {
@@ -35,6 +36,7 @@ function process(data) {
     var member = memberLookup[nameId];
     if(!member) {
       member = memberLookup[nameId] = {};
+      member.id = nameId;
       member.score = d.attended ? nodeScore : nodeScore;
       member.nodes = [node];
     } else {
@@ -44,7 +46,13 @@ function process(data) {
     
     nodes.push(node);
   });
-  nodes.sort(function(a,b) {return b.value - a.value; });
+  
+  for(key in memberLookup) {
+    var member = memberLookup[key];
+    if(member.nodes.length > 1) {
+      memberList.push(member)
+    }
+  }
 
 } // end of process function
 

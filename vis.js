@@ -1,16 +1,20 @@
 function turnOn(selection) {
+  /*
   selection
     //.attr('r', 13)
     .attr("stroke-width", 4)
     .attr("stroke", "red")
     .style("opacity", 1);
+    */
 }
 function turnOff(selection) {
+  /*
   selection
     .style("opacity", 0.5)
     .attr("stroke-width", 2)
     //.attr('r', 10)
     .attr("stroke", "black")
+    */
 }
 
 
@@ -39,6 +43,19 @@ function visualize() {
 
   var pone = vis.call(tip);
 
+  var paths = vis.selectAll("path.connector")
+    .data(memberList)
+  paths.enter()
+  .append("path")
+  .attr("class", function(d) {return d.id; })
+    .classed("connector", true)
+  
+  var line = d3.svg.line()
+  .x(function(d) { return d.x })
+  .y(function(d) { return d.y })
+  .interpolate("cardinal")
+  
+
   var circles = vis.selectAll('circle')
     .data(nodes)//, function(d) {return d.id; });
   var inACircle = false;
@@ -57,23 +74,36 @@ function visualize() {
   
     //.attr('stroke', function(d) {return d3.rgb(fill_color(d.group)).darker(); });
 
-  circles.on("mouseover", function(d) {
+  circles.on("mouseover", mouseOver);
+  paths.on("mouseover", mouseOver);
+  
+  function mouseOver(d) {
     //tip.show
     inACircle = true;
     circles.filter(function(f) { return f.id !== d.id })
-      .transition().duration(300)
-      .call(turnOff)
+    .classed("selected", false)
+      //.transition().duration(300)
+      //.call(turnOff)
 
     circles.filter(function(f) { return f.id === d.id })
-      .transition().duration(100)
-      .call(turnOn)
+    .classed("selected", true)
+      //.transition().duration(100)
+      //.call(turnOn)
     //circles.style("opacity", 0.5);
-  })
+    
+    paths.filter(function(f) { return f.id !== d.id })
+    .classed("selected", false)
+    paths.filter(function(f) { return f.id === d.id })
+    .classed("selected", true)
 
-  .on("mouseout", function(d) {
+  }
+
+  circles.on("mouseout", mouseOut);
+  paths.on("mouseout", mouseOut);
+  function mouseOut(d) {
     circles.transition().duration(500)
     .call(turnOff)
-  });
+  }
 
   function charge(d) {
     return -Math.pow(10, 2.0) / 8;
@@ -98,6 +128,8 @@ function visualize() {
         vis.selectAll('circle')
           .attr('cx', function(d) {return d.x;})
           .attr('cy', function(d) {return d.y;});
+        vis.selectAll("path.connector")
+      .attr("d", function(d) { return line(d.nodes) })
     });
 
   //column labeling

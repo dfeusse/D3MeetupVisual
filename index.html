@@ -7,63 +7,20 @@
       <script type="text/javascript" src="Caged-d3-tip/src/d3.tip.js"></script>
 
       <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
-      <script type="text/javascript" src="jquery.tipsy.js"></script>
-      <link href="tipsy.css" rel="stylesheet" type="text/css"/>
-		<!--
-	    <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-		<script type="text/javascript" src="../roark/d3/d3.v2.js"></script>
-	    <script type="text/javascript" src="../roark/d3/d3.geom.js"></script>
-	    <script type="text/javascript" src="../roark/d3/d3.layout.js"></script>
-	    <script type="text/javascript" src="../roark/d3/underscore.js"></script>
-	-->
-    <style type="text/css">
-
-    body {
-            font-family: "Helvetica Neue", Helvetica, sans-serif;
-            }
-
-        .d3-tip {
-            line-height: 1;
-            font-weight: bold;
-            padding: 12px;
-            background: rgba(0, 0, 0, 0.8);
-            /* color: #fff; */
-            color: steelblue;
-            /* color: #8a8989; */
-            border-radius: 2px;
-            }
-
-        .d3-tip:after {
-            box-sizing: border-box;
-            display: inline;
-            font-size: 10px;
-            width: 100%;
-            line-height: 1;
-            color: rgba(0, 0, 0, 0.8);
-            content: "\25BC";
-            position: absolute;
-            text-align: center;
-            }
-
-        .d3-tip.n:after {
-            margin: -1px 0 0 0;
-            top: 100%;
-            left: 0;
-            }
-
-    </style>
+      <link href="style.css" rel="stylesheet" type="text/css"/>
   	</head>
   <body>
   	<div id="display">
     <script type="text/javascript">
 
-var width = 1140,
-	height = 600,
-	layout_gravity = -0.1,
-	damper = 0.1,
-	nodes = [],
-  memberLookup = {},
-	vis, force, circles, radius_scale;
+var width = 1140;
+var	height = 600;
+var layout_gravity = -0.1;
+var damper = 0.1;
+var nodes = [];
+var memberList = [];
+var memberLookup = {};
+var	vis, force, circles, radius_scale;
 
 var center = {x: width / 2, y: height / 2};
 

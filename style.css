@@ -4,32 +4,32 @@ body {
 
 /* tooltips */
 .d3-tip {
-    line-height: 1;
-    font-weight: bold;
-    padding: 12px;
-    background: rgba(0, 0, 0, 0.8);
-    /* color: #fff; */
-    color: #d71028;
-    /* color: #8a8989; */
-    border-radius: 2px;
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  /* color: #fff; */
+  color: steelblue;
+  /* color: #8a8989; */
+  border-radius: 2px;
 }
 
 .d3-tip:after {
-    box-sizing: border-box;
-    display: inline;
-    font-size: 10px;
-    width: 100%;
-    line-height: 1;
-    color: rgba(0, 0, 0, 0.8);
-    content: "\25BC";
-    position: absolute;
-    text-align: center;
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(0, 0, 0, 0.8);
+  content: "\25BC";
+  position: absolute;
+  text-align: center;
 }
 
 .d3-tip.n:after {
-    margin: -1px 0 0 0;
-    top: 100%;
-    left: 0;
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
 }
 
 .d3-tip span {
@@ -37,3 +37,30 @@ body {
     /* color: #d71028; */
     color: #fff;
 }
+
+
+.connector {
+  fill: none;
+  stroke: #949494;
+  stroke-width: 1;
+  stroke-opacity: 0.5;
+}
+
+.connector.selected {
+  stroke-width: 4;
+  stroke: #000;
+  stroke-opacity: 1;
+}
+
+circle {
+  opacity: 0.5;
+  stroke-width: 2;
+  stroke: black;
+}
+circle.selected {
+  stroke-width: 4;
+  stroke: red;
+  opacity: 1;
+}
+
+
