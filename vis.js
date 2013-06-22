@@ -40,7 +40,7 @@ function visualize() {
   var pone = vis.call(tip);
 
   var circles = vis.selectAll('circle')
-    .data(nodes, function(d) {return d.id; });
+    .data(nodes)//, function(d) {return d.id; });
   var inACircle = false;
   circles.enter()
     .append('circle')
