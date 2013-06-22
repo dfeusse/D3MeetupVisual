@@ -28,7 +28,7 @@ function visualize() {
 
   var tip = d3.tip()
     .attr('class', 'd3-tip')
-    .html(function(d) { return 'Member: ' + d.name })
+    .html(function(d) { return 'Member: ' + '<span>' + d.name + '</span>' })
     //.html(function(d) { return d.name; })
     .offset([-12, 0]);
 
@@ -91,9 +91,10 @@ function visualize() {
     .on('tick', function(e) {
         force.nodes().forEach(function(d) {
           //var target = year_centers[d.year]
+          var attendance_score = (memberLookup[d.id].score*15)
           var target = meetup_centers[d.node_centers]
           d.x = d.x + (target.x - d.x) * (damper + 0.02) * e.alpha;
-          d.y = d.y + (target.y - d.y) * (damper + 0.02) * e.alpha;
+          d.y = d.y + ((target.y - attendance_score) - d.y) * (damper + 0.02) * e.alpha;
         })
         vis.selectAll('circle')
           .attr('cx', function(d) {return d.x;})

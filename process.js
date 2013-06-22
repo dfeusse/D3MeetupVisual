@@ -29,6 +29,7 @@ function process(data) {
       y: Math.random() * 800,
       //meetup: d.event_id,
       attended: d.attended, //ADDED
+      //node_score: nodeScore,
       node_centers: d.event.id + "_" + d.attended
     };
     
