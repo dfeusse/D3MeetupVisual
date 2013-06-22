@@ -14,12 +14,19 @@ function turnOff(selection) {
 }
 
 
-
 function visualize() {
+  var tip = d3.tip()
+    .attr('class', 'd3-tip')
+    .html(function(d) { return 'pone' + d.id })
+    //.html(function(d) { return d.name; })
+    .offset([-12, 0]);
+
   var vis = d3.select("#display").append("svg")
       .attr('width', width)
       .attr('height', height)
       .attr('id', 'svg_vis');
+
+  var pone = vis.call(tip);
 
   var circles = vis.selectAll('circle')
     .data(nodes, function(d) {return d.id; });
@@ -32,9 +39,12 @@ function visualize() {
     .attr('stroke-width', 2)
     .attr('r', 10)
     .style("opacity", 0.8);
+
+  
     //.attr('stroke', function(d) {return d3.rgb(fill_color(d.group)).darker(); });
 
   circles.on("mouseover", function(d) {
+    //tip.show
     inACircle = true;
     circles.filter(function(f) { return f.id !== d.id })
       .transition().duration(300)
@@ -42,9 +52,10 @@ function visualize() {
 
     circles.filter(function(f) { return f.id === d.id })
       .transition().duration(100)
-      .call(turnOn);
+      .call(turnOn)
     //circles.style("opacity", 0.5);
   })
+
   .on("mouseout", function(d) {
     circles.transition().duration(500)
     .call(turnOff)
@@ -103,4 +114,22 @@ function visualize() {
 
   //start
   force.start();
+
+  circles.on('mouseover.tip', tip.show);
+  circles.on('mouseout.tip', tip.hide);
+
+  //tipsy tooltips
+  //http://bl.ocks.org/ilyabo/1373263
+  /*
+  $('svg circle').tipsy({
+        gravity: 'w',
+        html: true,
+        title: function() {
+          //var d = this.__data__, c = colors(d.i);
+          //return 'Hi there! My color is <span style="color:' + c + '">' + c + '</span>';
+          return 'id: ';
+        }
+      });
+  */
 }
+
