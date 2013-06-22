@@ -49,8 +49,8 @@ function visualize() {
     .attr("class", function(d) {return d.id; })
     .attr('stroke-width', 2)
     //.attr('r', 10)
-    .attr('r', function(d) { return scoreSizeScale(d.score); })
-    .style('fill', function(d) { return scoreColorScale(d.score); })
+    .attr('r', function(d) { return scoreSizeScale(memberLookup[d.id].score); })
+    .style('fill', function(d) { return scoreColorScale(memberLookup[d.id].score); })
     .style("opacity", 0.8)
   
 

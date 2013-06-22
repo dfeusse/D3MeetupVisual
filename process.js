@@ -1,7 +1,5 @@
 
 function process(data) {
-  memberLookup = {};
-  
   data.forEach(function(d) {
     var nameId;
     if (d.member)
@@ -42,9 +40,7 @@ function process(data) {
     } else {
       member.score += nodeScore;
       member.nodes.push(node);
-      console.log("ID", nameId)
     }
-    node.score = member.score;
     
     nodes.push(node);
   });
