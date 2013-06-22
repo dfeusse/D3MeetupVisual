@@ -22,6 +22,7 @@ function process(data) {
       nodeScore = -1;
     } 
 
+    var node_center = d.event.id + "_" + d.attended;
     node = {
       id: nameId,
       //radius: radius_scale(parseInt(d.total_amount, 10)),
@@ -29,12 +30,14 @@ function process(data) {
       name: d.member? d.member.name : "",
       //group: d.group,
       //year: d.start_year,
-      x: Math.random() * 900,
-      y: Math.random() * 800,
+      x: meetup_centers[node_center].x + Math.random() * 20,
+      y: meetup_centers[node_center].y + Math.random() * 20,
+      //x: Math.random() * 900,
+      //y: Math.random() * 800,
       //meetup: d.event_id,
       attended: d.attended, //ADDED
       //node_score: nodeScore,
-      node_centers: d.event.id + "_" + d.attended
+      node_centers: node_center
     };
     
     var member = memberLookup[nameId];
