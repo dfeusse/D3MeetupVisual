@@ -143,7 +143,7 @@ function visualize() {
     .on('tick', function(e) {
         force.nodes().forEach(function(d) {
           //var target = year_centers[d.year]
-          var attendance_score = (memberLookup[d.id].score*15)
+          var attendance_score = (memberLookup[d.id].score*35)
           var target = meetup_centers[d.node_centers]
           d.x = d.x + (target.x - d.x) * (damper + 0.02) * e.alpha;
           d.y = d.y + ((target.y - attendance_score) - d.y) * (damper + 0.02) * e.alpha;

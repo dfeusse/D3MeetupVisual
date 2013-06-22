@@ -14,7 +14,7 @@
     <script type="text/javascript">
 
 var width = 1140;
-var	height = 700;
+var	height = 750;
 var layout_gravity = -0.1;
 var damper = 0.1;
 var nodes = [];
@@ -24,13 +24,15 @@ var	vis, force, circles, radius_scale;
 
 var center = {x: width / 2, y: height / 2};
 
+var attendY = 300;
+var flakeY = 420;
 var meetup_centers = {
-    "84485982_true": {x: 300, y: 250},
-    "84485982_false": {x: 300, y: 400},
-    "102356032_true": {x: width / 2, y: 250},
-    "102356032_false": {x: width / 2, y: 400},
-    "103428452_true": {x: width - 300, y: 250},
-    "103428452_false": {x: width - 300, y: 400}
+    "84485982_true": {x: 300, y: attendY},
+    "84485982_false": {x: 300, y: flakeY},
+    "102356032_true": {x: width / 2, y: attendY},
+    "102356032_false": {x: width / 2, y: flakeY},
+    "103428452_true": {x: width - 300, y: attendY},
+    "103428452_false": {x: width - 300, y: flakeY}
 };
 
 /*
